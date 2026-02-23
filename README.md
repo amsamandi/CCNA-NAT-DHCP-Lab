@@ -1,8 +1,8 @@
-# CCNA Lab – OSPF Multi-Router Network
+# CCNA Lab – NAT + DHCP + Internet Simulation
 
 ## Overview
 
-This lab demonstrates dynamic routing using OSPF (Open Shortest Path First). Multiple routers exchange routing information automatically to provide full network connectivity.
+This lab demonstrates Network Address Translation (NAT), DHCP configuration, and Internet connectivity simulation. Internal devices receive IP addresses automatically via DHCP and access an external network using NAT overload (PAT).
 
 Built and tested using Cisco Packet Tracer.
 
@@ -10,34 +10,45 @@ Built and tested using Cisco Packet Tracer.
 
 ## Network Design
 
-Routers connected in multi-network topology.
+Components:
 
-Example networks:
+* Internal LAN: 192.168.1.0/24
+* DHCP Server: Router
+* NAT Device: Edge Router
+* External Network (Internet Simulation): 209.165.200.0/24
 
-* 192.168.1.0/24
-* 192.168.2.0/24
-* 192.168.3.0/24
-
-Routing protocol: OSPF Area 0
+Inside interface: G0/0
+Outside interface: G0/1
 
 ---
 
 ## Key Configuration
 
-Enable OSPF:
+DHCP configuration:
 
-```id="ospf1"
-router ospf 1
-network 192.168.1.0 0.0.0.255 area 0
-network 192.168.2.0 0.0.0.255 area 0
-network 192.168.3.0 0.0.0.255 area 0
+```id="l27ah5"
+ip dhcp pool LAN
+network 192.168.1.0 255.255.255.0
+default-router 192.168.1.1
+dns-server 8.8.8.8
 ```
 
-Router ID example:
+NAT Overload configuration:
 
-```id="ospf2"
-router ospf 1
-router-id 1.1.1.1
+```id="v9t3op"
+access-list 1 permit 192.168.1.0 0.0.0.255
+
+ip nat inside source list 1 interface g0/1 overload
+```
+
+Interface configuration:
+
+```id="7udn5x"
+interface g0/0
+ip nat inside
+
+interface g0/1
+ip nat outside
 ```
 
 ---
@@ -46,28 +57,29 @@ router-id 1.1.1.1
 
 Commands used:
 
-* show ip ospf neighbor
-* show ip route
-* show ip protocols
+* show ip nat translations
+* show ip nat statistics
+* show ip dhcp binding
+* show ip interface brief
 
-All routers successfully learned routes dynamically.
+Ping to external network confirms Internet connectivity.
 
 ---
 
 ## Skills Demonstrated
 
-* OSPF configuration
-* Dynamic routing
-* Router neighbor adjacency
-* Route advertisement
-* Network troubleshooting
-* Enterprise routing concepts
+* DHCP configuration
+* NAT overload (PAT)
+* Inside and Outside NAT configuration
+* Internet access simulation
+* IP address management
+* Network verification and troubleshooting
 
 ---
 
 ## Lab File
 
-CCNA OSPF Lab (.pkt)
+CCNA LAB 8 – NAT + DHCP + Internet Simulation (.pkt)
 
 ---
 
